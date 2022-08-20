@@ -1,0 +1,5 @@
+PidFile=/run/zabbix/zabbix_agentd.pid
+LogFile=/var/log/zabbix/zabbix_agentd.log
+LogFileSize=1
+Server=51.250.13.27
+ServerActive=51.250.13.27

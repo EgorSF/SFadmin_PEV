@@ -1,0 +1,7 @@
+---
+- hosts: all
+  tasks:
+   - name: my command
+     action: command echo "web"
+     when:
+      inventory_hostname in groups['web']

@@ -1,0 +1,42 @@
+---
+
+- hosts: all
+  become: yes
+  tasks:
+  -  name: Install zabbix-agent on Ubuntu
+     apt:
+        name=zabbix-agent
+        state=latest
+     when:
+        ansible_os_family == "Debian"
+     notify:
+        zabbix-agent systemd
+  -  name: Install zabbix-agent on Centos
+     yum:
+        name=zabbix-agent
+        state=latest
+     when:
+        ansible_os_family == "RedHat"
+     notify:
+        zabbix-agent systemd
+  -  name: add config
+     template:
+        src: /etc/ansible/common/files/serversetting
+        dest: /etc/zabbix/zabbix_agentd.conf
+        mode: 0777
+  -  name: Line change
+     lineinfile:
+        path: /etc/zabbix/zabbix_agentd.conf
+        insertafter: EOF
+        line: "{{ item }}"
+        state: present
+     with_items:
+     - 'Hostname={{ ansible_hostname }}'
+
+  handlers:
+  - name: zabbix-agent systemd
+    systemd:
+     name: zabbix-agent.service
+     enabled: yes
+     state: started
+
